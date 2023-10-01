@@ -17,7 +17,7 @@ return new class extends Migration
             $table->bigInteger('store_id');
             $table->string('store_name');
             $table->string('name');
-            $table->string('sku')->unique();
+            $table->string('sku');
             $table->string('brand')->nullable();
             $table->string('model')->nullable();
             $table->string('url');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Categorie;
+use App\Models\Endpoint;
 use App\Models\Product;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
@@ -12,29 +13,31 @@ class ProductController extends Controller
 {
     public function fetchProductsFromApi()
     {
-        $response = Http::withHeaders([
-            'apikey' => '3b5489661f334fda8b811d6c8bfccbd9'
-        ])->get("https://services.retailcompass.com/api/pricing/v2/products");
-        $data = $response->json();
-        $paginator = $data['paging'];
-        $products = collect([]);
-        $products = $products->merge($data['products']);
-        for ($i = 0; $i <= $data['paging']['pages']; $i++) {
-            if ($i == 9)
-                sleep(65);
-
+        $endpoints = Endpoint::all();
+        foreach ($endpoints as $endpoint) {
             $response = Http::withHeaders([
-                'apikey' => '3b5489661f334fda8b811d6c8bfccbd9'
-            ])->get("https://services.retailcompass.com/api/pricing/v2/products?page=" . $i + 1);
-            if (isset($response->json()['paging'])) {
-                Log::error("Log response", ['data' => $response->json()['paging']]);
-                $data = $response->json();
-                $products = $products->merge($data['products']);
-            } else {
-                Log::error("empty data", ['data' => $response->json()]);
+                'apikey' => $endpoint->api_key
+            ])->get($endpoint->url);
+            $data = $response->json();
+            $paginator = $data['paging'];
+            $products = collect([]);
+            $products = $products->merge($data['products']);
+            for ($i = 0; $i <= $data['paging']['pages']; $i++) {
+                if ($i == 9)
+                    sleep(65);
+
+                $response = Http::withHeaders([
+                    'apikey' => $endpoint->api_key
+                ])->get($endpoint->url . "?page=" . $i + 1);
+                if (isset($response->json()['paging'])) {
+                    $data = $response->json();
+                    $products = $products->merge($data['products']);
+                } else {
+                    Log::error("empty data", ['data' => $response->json()]);
+                }
             }
+            $this->saveProducts($products, $endpoint->wharehouse_name, $endpoint->wharehouse_id);
         }
-        $this->saveProducts($products, "VDM", "c105");
         return $products->count();
     }
 
