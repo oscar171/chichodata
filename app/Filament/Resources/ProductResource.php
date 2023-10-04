@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ProductResource\Pages;
 use Filament\Tables\Filters\SelectFilter;
 use App\Models\Product;
+use App\Models\Endpoint;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -85,7 +86,7 @@ class ProductResource extends Resource
                 ->options(Product::getStoresNameOptions())
                 ->label('Tienda'),
                 SelectFilter::make('warehouse_name')
-                ->options(Product::getWharehouseNameOptions())
+                ->options(Endpoint::getWharehouseNameOptions())
                 ->label('Warehouse')
             ])
             ->actions([

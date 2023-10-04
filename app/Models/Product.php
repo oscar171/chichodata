@@ -50,14 +50,4 @@ class Product extends Model
         }
         return $storesName;
     }
-
-    static public function getWharehouseNameOptions()
-    {
-        $wharehouses = Product::select('warehouse_name')->distinct()->get();
-        $wharehousesName = [];
-        foreach ($wharehouses as $wharehouse) {
-            $wharehousesName[$wharehouse->store_name] = $wharehouse->warehouse_name;
-        }
-        return $wharehousesName;
-    }
 }
