@@ -25,7 +25,7 @@ class ProductResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('product_id')
+                Forms\Components\TextInput::make('product_id')->label('Codigo de Producto')
                     ->required()
                     ->numeric(),
                 Forms\Components\TextInput::make('store_id')
@@ -48,18 +48,9 @@ class ProductResource extends Resource
                 Forms\Components\TextInput::make('url')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\FileUpload::make('image_url')
-                    ->image()
-                    ->required(),
                 Forms\Components\TextInput::make('status')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\DateTimePicker::make('created_cocacola')
-                    ->required(),
-                Forms\Components\DateTimePicker::make('updated_cocacola')
-                    ->required(),
-                Forms\Components\DateTimePicker::make('extracted')
-                    ->required(),
                 Forms\Components\TextInput::make('lowest_price')
                     ->required()
                     ->numeric(),
