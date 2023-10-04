@@ -56,7 +56,7 @@ class FetchProducts extends Command
                     }
                 }
                 $this->saveProducts($products, $endpoint->wharehouse_name, $endpoint->wharehouse_id);
-                Log::error('api key sincronizada',['api_key' => $endpoint->api_key]);
+                Log::error('api key sincronizada', ['api_key' => $endpoint->api_key]);
             }
         } catch (\Throwable $th) {
             report($th);
@@ -66,7 +66,7 @@ class FetchProducts extends Command
     private function saveProducts($products, $warehouseName, $warehouseid)
     {
         foreach ($products as $product) {
-            $newProduct = Product::firstOrCreate(
+            $newProduct = Product::updateOrCreate(
                 [
                     'sku' => $product['sku'],
                     'extracted' => Carbon::parse($product['extracted'])->format('Y-m-d'),
@@ -90,47 +90,47 @@ class FetchProducts extends Command
                     'normal_price' => $product['prices']['normalPrice'] ?? null,
                 ]
             );
-            if ($newProduct->wasRecentlyCreated) {
-                foreach ($product['competitors'] as $competitor) {
-                    $newProduct->competitors()->create(
-                        [
-                            'sku' => $competitor['sku'],
-                            'extracted' => Carbon::parse($competitor['extracted']),
-                            'retail_product_id' => $competitor['productId'],
-                            'store_id' => $competitor['storeId'],
-                            'store_name' => $competitor['storeName'],
-                            'name' => $competitor['name'],
-                            'brand' => $competitor['brand'] ?? null,
-                            'model' => $competitor['model'] ?? null,
-                            'url' => $competitor['url'],
-                            'image_url' => $competitor['imageUrl'],
-                            'status' => $competitor['status'],
-                            'created_retailer' => Carbon::parse($competitor['created']),
-                            'updated_retailer' => Carbon::parse($competitor['updated']),
-                            'lowest_price' => $competitor['prices']['lowest'],
-                            'offer_price' => $competitor['prices']['offerPrice'] ?? null,
-                            'normal_price' => $competitor['prices']['normalPrice'] ?? null,
-                            'match_status' => $competitor['matchStatus'],
-                            'warehouse_name' => $warehouseName,
-                            'warehouse_id' => $warehouseid,
-                        ]
-                    );
-                }
+            foreach ($product['competitors'] as $competitor) {
+                $newProduct->competitors()->updateOrCreate(
+                    [
+                        'sku' => $competitor['sku'],
+                        'extracted' => Carbon::parse($competitor['extracted'])->format('Y-m-d'),
+                        'warehouse_name' => $warehouseName,
+                        'warehouse_id' => $warehouseid,
+                    ],
+                    [
+                        'retail_product_id' => $competitor['productId'],
+                        'store_id' => $competitor['storeId'],
+                        'store_name' => $competitor['storeName'],
+                        'name' => $competitor['name'],
+                        'brand' => $competitor['brand'] ?? null,
+                        'model' => $competitor['model'] ?? null,
+                        'url' => $competitor['url'],
+                        'image_url' => $competitor['imageUrl'],
+                        'status' => $competitor['status'],
+                        'created_retailer' => Carbon::parse($competitor['created']),
+                        'updated_retailer' => Carbon::parse($competitor['updated']),
+                        'lowest_price' => $competitor['prices']['lowest'],
+                        'offer_price' => $competitor['prices']['offerPrice'] ?? null,
+                        'normal_price' => $competitor['prices']['normalPrice'] ?? null,
+                        'match_status' => $competitor['matchStatus'],
+                    ]
+                );
+            }
 
-                foreach ($product['categories']['web'] as $categorie) {
-                    $newCategorie = Categorie::firstOrCreate(
-                        [
-                            'cocacola_id' => $categorie['id'],
-                        ],
-                        [
-                            'category_id_path' => $categorie['categoryIdPath'],
-                            'full_path' => $categorie['fullPath'],
-                        ]
-                    );
+            foreach ($product['categories']['web'] as $categorie) {
+                $newCategorie = Categorie::firstOrCreate(
+                    [
+                        'cocacola_id' => $categorie['id'],
+                    ],
+                    [
+                        'category_id_path' => $categorie['categoryIdPath'],
+                        'full_path' => $categorie['fullPath'],
+                    ]
+                );
 
-                    if (!$newProduct->categories()->where('categories.id', $newCategorie->id)->exists())
-                        $newProduct->categories()->attach($newCategorie);
-                }
+                if (!$newProduct->categories()->where('categories.id', $newCategorie->id)->exists())
+                    $newProduct->categories()->attach($newCategorie);
             }
         }
     }
