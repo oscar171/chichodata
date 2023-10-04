@@ -41,7 +41,7 @@ class FetchProducts extends Command
                 $products = collect([]);
                 $products = $products->merge($data['products']);
                 for ($i = 0; $i <= $data['paging']['pages']; $i++) {
-                    if ($i == 9)
+                    if ($i == 5)
                         sleep(65);
 
                     $response = Http::withHeaders([
