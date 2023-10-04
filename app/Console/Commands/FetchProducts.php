@@ -70,6 +70,8 @@ class FetchProducts extends Command
                 [
                     'sku' => $product['sku'],
                     'extracted' => Carbon::parse($product['extracted'])->format('Y-m-d'),
+                    'warehouse_name' => $warehouseName,
+                    'warehouse_id' => $warehouseid,
                 ],
                 [
                     'product_id' => $product['productId'],
@@ -86,8 +88,6 @@ class FetchProducts extends Command
                     'lowest_price' => $product['prices']['lowest'],
                     'offer_price' => $product['prices']['offerPrice'],
                     'normal_price' => $product['prices']['normalPrice'] ?? null,
-                    'warehouse_name' => $warehouseName,
-                    'warehouse_id' => $warehouseid,
                 ]
             );
             if ($newProduct->wasRecentlyCreated) {
