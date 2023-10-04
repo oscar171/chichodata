@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('categorie_id')->constrainted();
             $table->unsignedBigInteger('product_id')->constrainted();
-            $table->timestamps();
         });
     }
 

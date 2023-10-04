@@ -26,7 +26,7 @@ return new class extends Migration
             $table->string('status');
             $table->datetime('created_retailer');
             $table->datetime('updated_retailer');
-            $table->datetime('extracted');
+            $table->date('extracted');
             $table->float('lowest_price', 8, 2);
             $table->float('offer_price', 8, 2)->nullable();
             $table->float('normal_price', 8, 2)->nullable();
