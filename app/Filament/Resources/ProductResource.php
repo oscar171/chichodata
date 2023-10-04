@@ -76,10 +76,11 @@ class ProductResource extends Resource
             ->columns([
                 Tables\Columns\ImageColumn::make('image_url')->circular()->label('imagen'),
                 Tables\Columns\TextColumn::make('name')->weight(FontWeight::Bold)->wrap()->label('Producto'),
-                Tables\Columns\TextColumn::make('sku')->searchable(),
+                Tables\Columns\TextColumn::make('sku')->searchable()->sortable(),
                 Tables\Columns\TextColumn::make('store_name')->label('Tieda'),
                 Tables\Columns\TextColumn::make('warehouse_name')->label('Warehouse'),
-                Tables\Columns\TextColumn::make('warehouse_id')
+                Tables\Columns\TextColumn::make('warehouse_id'),
+                Tables\Columns\TextColumn::make('extracted')->label('Estraido')
             ])
             ->filters([
                 SelectFilter::make('store_name')
