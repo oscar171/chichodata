@@ -81,8 +81,11 @@ class ProductResource extends Resource
                 Tables\Columns\TextColumn::make('warehouse_id')
             ])
             ->filters([
-                SelectFilter::make('warehouse_name')
+                SelectFilter::make('store_name')
                 ->options(Product::getStoresNameOptions())
+                ->label('Tienda'),
+                SelectFilter::make('warehouse_name')
+                ->options(Product::getWharehouseNameOptions())
                 ->label('Warehouse')
             ])
             ->actions([
