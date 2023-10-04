@@ -3,13 +3,14 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductResource\Pages;
-use App\Filament\Resources\ProductResource\RelationManagers;
+use Filament\Tables\Filters\SelectFilter;
 use App\Models\Product;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;;
+
 use Filament\Support\Enums\FontWeight;
 
 class ProductResource extends Resource
@@ -72,22 +73,17 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\Layout\Split::make([
-                    Tables\Columns\ImageColumn::make('image_url')->circular(),
-                    Tables\Columns\Layout\Stack::make([
-                        Tables\Columns\TextColumn::make('name')->weight(FontWeight::Bold),
-                        Tables\Columns\TextColumn::make('sku'),
-                        Tables\Columns\TextColumn::make('store_name'),
-                    ]),
-                    Tables\Columns\Layout\Stack::make([
-                        Tables\Columns\TextColumn::make('brand'),
-                        Tables\Columns\TextColumn::make('model'),
-                        Tables\Columns\TextColumn::make('status'),
-                    ]),
-                ]),
+                Tables\Columns\ImageColumn::make('image_url')->circular()->label('imagen'),
+                Tables\Columns\TextColumn::make('name')->weight(FontWeight::Bold)->wrap()->label('Producto'),
+                Tables\Columns\TextColumn::make('sku'),
+                Tables\Columns\TextColumn::make('store_name')->label('Tieda'),
+                Tables\Columns\TextColumn::make('warehouse_name')->label('Warehouse'),
+                Tables\Columns\TextColumn::make('warehouse_id')
             ])
             ->filters([
-                //
+                SelectFilter::make('warehouse_name')
+                ->options(Product::getStoresNameOptions())
+                ->label('Warehouse')
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

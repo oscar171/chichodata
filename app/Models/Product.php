@@ -40,4 +40,14 @@ class Product extends Model
     {
         return $this->hasMany(Competitor::class);
     }
+
+    static public function getStoresNameOptions()
+    {
+        $stores = Product::select('store_name')->distinct()->get();
+        $storesName = [];
+        foreach ($stores as $store) {
+            $storesName[$store->store_name] = $store->store_name;
+        }
+        return $storesName;
+    }
 }
