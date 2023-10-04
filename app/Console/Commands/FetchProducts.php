@@ -41,8 +41,9 @@ class FetchProducts extends Command
                 $products = collect([]);
                 $products = $products->merge($data['products']);
                 for ($i = 0; $i <= $data['paging']['pages']; $i++) {
-                    if ($i == 5)
+                    if ($i % 5 == 0) {
                         sleep(65);
+                    }
 
                     $response = Http::withHeaders([
                         'apikey' => $endpoint->api_key
