@@ -18,10 +18,10 @@ class Endpoint extends Model
 
      static public function getWharehouseNameOptions()
     {
-        $wharehouses = Product::select('warehouse_name')->distinct()->get();
+        $wharehouses = Endpoint::select('wharehouse_name')->distinct()->get();
         $wharehousesName = [];
         foreach ($wharehouses as $wharehouse) {
-            $wharehousesName[$wharehouse->store_name] = $wharehouse->warehouse_name;
+            $wharehousesName[$wharehouse->wharehouse_name] = $wharehouse->wharehouse_name;
         }
         return $wharehousesName;
     }
