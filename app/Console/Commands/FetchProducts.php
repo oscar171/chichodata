@@ -37,26 +37,28 @@ class FetchProducts extends Command
                 $response = Http::withHeaders([
                     'apikey' => $endpoint->api_key
                 ])->get($endpoint->url);
-                $data = $response->json();
-                $products = collect([]);
-                $products = $products->merge($data['products']);
-                for ($i = 0; $i <= $data['paging']['pages']; $i++) {
-                    if ($i % 9 == 0) {
-                        sleep(65);
-                    }
+                if ($response->successful()) {
+                    $data = $response->json();
+                    $products = collect([]);
+                    $products = $products->merge($data['products']);
+                    for ($i = 0; $i <= $data['paging']['pages']; $i++) {
+                        if ($i % 9 == 0) {
+                            sleep(65);
+                        }
 
-                    $response = Http::withHeaders([
-                        'apikey' => $endpoint->api_key
-                    ])->get($endpoint->url . "?page=" . $i + 1);
-                    if (isset($response->json()['paging'])) {
-                        $data = $response->json();
-                        $products = $products->merge($data['products']);
-                    } else {
-                        Log::error("empty data", ['data' => $response->json()]);
+                        $response = Http::withHeaders([
+                            'apikey' => $endpoint->api_key
+                        ])->get($endpoint->url . "?page=" . $i + 1);
+                        if (isset($response->json()['paging'])) {
+                            $data = $response->json();
+                            $products = $products->merge($data['products']);
+                        } else {
+                            Log::error("empty data", ['data' => $response->json()]);
+                        }
                     }
+                    $this->saveProducts($products, $endpoint->wharehouse_name, $endpoint->wharehouse_id);
+                    Log::error('api key sincronizada', ['api_key' => $endpoint->api_key]);
                 }
-                $this->saveProducts($products, $endpoint->wharehouse_name, $endpoint->wharehouse_id);
-                Log::error('api key sincronizada', ['api_key' => $endpoint->api_key]);
             }
         } catch (\Throwable $th) {
             report($th);
