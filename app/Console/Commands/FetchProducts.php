@@ -90,7 +90,7 @@ class FetchProducts extends Command
                     'created_cocacola' => Carbon::parse($product['created']),
                     'updated_cocacola' => Carbon::parse($product['updated']),
                     'lowest_price' => $product['prices']['lowest'],
-                    'offer_price' => $product['prices']['offerPrice'] ?? null,
+                    'offer_price' => $product['prices']['offerPrice'] ?? 0,
                     'normal_price' => $product['prices']['normalPrice'] ?? null,
                 ]
             );
