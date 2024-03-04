@@ -121,20 +121,21 @@ class FetchProducts extends Command
                     ]
                 );
             }
+            if (isset($product['categories']['web']) && is_array($product['categories']['web']) && count($product['categories']['web']) > 0) {
+                foreach ($product['categories']['web'] as $categorie) {
+                    $newCategorie = Categorie::firstOrCreate(
+                        [
+                            'cocacola_id' => $categorie['id'],
+                        ],
+                        [
+                            'category_id_path' => $categorie['categoryIdPath'],
+                            'full_path' => $categorie['fullPath'],
+                        ]
+                    );
 
-            foreach ($product['categories']['web'] as $categorie) {
-                $newCategorie = Categorie::firstOrCreate(
-                    [
-                        'cocacola_id' => $categorie['id'],
-                    ],
-                    [
-                        'category_id_path' => $categorie['categoryIdPath'],
-                        'full_path' => $categorie['fullPath'],
-                    ]
-                );
-
-                if (!$newProduct->categories()->where('categories.id', $newCategorie->id)->exists())
-                    $newProduct->categories()->attach($newCategorie);
+                    if (!$newProduct->categories()->where('categories.id', $newCategorie->id)->exists())
+                        $newProduct->categories()->attach($newCategorie);
+                }
             }
         }
     }
