@@ -57,7 +57,6 @@ class FetchProducts extends Command
                         }
                     }
                     $this->saveProducts($products, $endpoint->wharehouse_name, $endpoint->wharehouse_id);
-                    Log::error('api key sincronizada', ['api_key' => $endpoint->api_key]);
                 } else {
                     Log::error("error sincronizando", ['api_key' => $endpoint->api_key, 'data' => $response->json()]);
                 }
